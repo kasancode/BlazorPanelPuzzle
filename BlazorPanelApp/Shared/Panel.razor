@@ -1,0 +1,15 @@
+﻿<div class="puzzle-panel @(PanelStatus.On ? "puzzle-panel-on" :"")" @onclick="togglePanel"></div>
+
+@code  {
+
+    [Parameter]
+    public PanelModel PanelStatus { get; set; }
+
+    [Parameter]
+    public EventCallback<PanelModel> OnClickPanel { get; set; }
+
+    void togglePanel()
+    {
+        this.OnClickPanel.InvokeAsync(PanelStatus);
+    }
+}

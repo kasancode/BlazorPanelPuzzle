@@ -1,0 +1,68 @@
+﻿@page "/"
+
+<h1>Panel Game</h1>
+
+<div class="form-inline m-3">
+    <div class="form-group m-1">
+        <input type="text" class="form-control" @bind-value="puzzleSize" />
+    </div>
+    <div class="form-group m-1">
+        <button class="btn btn-primary" @onclick="Reset">Reset</button>
+    </div>
+</div>
+
+<div class="container">
+    @for (var y = 0; y < state.GetLength(1); y++)
+    {
+        <div>
+            @for (var x = 0; x < state.GetLength(0); x++)
+            {
+                <Panel PanelStatus="@(new PanelModel { X = x, Y = y, On = state[x, y] })" OnClickPanel="clickPanel"></Panel>
+            }
+        </div>
+    }
+</div>
+
+
+@code {
+    int puzzleSize = 3;
+    bool[,] state = new bool[3, 3];
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Reset();
+    }
+
+    void Reset()
+    {
+        var rnd = new Random();
+
+        state = new bool[puzzleSize, puzzleSize];
+
+        for (var y = 0; y < state.GetLength(1); y++)
+        {
+            for (var x = 0; x < state.GetLength(0); x++)
+            {
+                state[x, y] = rnd.Next(2) == 0;
+            }
+        }
+    }
+
+    void clickPanel(PanelModel model)
+    {
+        togglePanel(model.X, model.Y);
+        togglePanel(model.X - 1, model.Y);
+        togglePanel(model.X, model.Y - 1);
+        togglePanel(model.X + 1, model.Y);
+        togglePanel(model.X, model.Y + 1);
+    }
+
+    void togglePanel(int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= state.GetLength(0) || y >= state.GetLength(1))
+            return;
+
+        state[x, y] = !state[x, y];
+    }
+}
